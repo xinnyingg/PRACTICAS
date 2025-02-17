@@ -14,6 +14,6 @@ def compra(lista,dinero):
     return cont
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
     print(doctest.testmod())
