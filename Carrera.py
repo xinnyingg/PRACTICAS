@@ -29,7 +29,7 @@ def tp_ct(t):
     # pasamos el tiempo en hh:mm:ss,cc a centésimas de segundo
 
     ls = t.split(';') #convertir en una lista y .split(;) separar elementos segun lo que este en()
-    print(ls)
+    #print(ls)
     return[int(ls[0]), int(ls[1])*60*60*100+int(ls[2])*60*100+int(ls[3])*100+int(ls[4])]
 
 def ct_tp(c):
@@ -37,10 +37,38 @@ def ct_tp(c):
     pass
 
 
-def vuelta_rapida_veh(carr, d):
+def vuelta_rapida_veh(d):
     # Dada la lista de carrera y un numero de dporsal,
     # determinar en qué vuelta ha realizado el menor tiempo
-    pass
+    try:
+        with open('codigos.txt', mode='r') as f:
+            vrap = False
+            for linea in f:
+                coche , cents = tp_ct(linea)
+                if coche == d:
+                    #[tiempo de paso, vuelta rapida]
+                    #vrap = [cents, cents] #asignar la primera vuelta al llegar meta para coche d
+                    vrap = {'paso': cents, 'rapida': cents}
+                    break #parar bucle
+
+            for linea in f: #toma la siguiente linea del fichero. para empezar de inicio, con otro with open
+                coche , cents = tp_ct(linea)
+                if coche == d:
+                    paso = cents
+                    #vuelta = cents - vrap[0] #mirar la segunda vuelta al llegar meta para el mismo coche
+                    vuelta = cents - vrap['paso']
+                    #if vuelta < vrap[1]: #comprobar cual es la vuelta mas rapida
+                     #   vrap = [cents, vuelta]
+                    #else:
+                        vrap[0] = cents
+                    #lo mismo pero con diccionario
+                    if vuelta < vrap['rapida']:
+                        vrap ={'paso': cents, 'rapida': vuelta}
+                    else:
+                        vrap['paso'] = cents
+            return vrap
+    except Exception as e:
+        print("Error:", e)
 
 def vuelta_rapida_carrera(carr):
     # Determinar cual es la vuelta rapida de toda la carrera
@@ -70,7 +98,7 @@ def primer_paso():
                     if len(control) == 15: #si llega al 15, no hace falta seguir, pq solo hay 15
                         return control
             return control
-    except FileNotFoundError as e:
+    except Exception as e:
         print("Error:", e)
 
 
@@ -81,22 +109,27 @@ def main():
     """
     #datos = f.readlines()
     #datos = list(f) #lo mismo que readlines
-    print(primer_paso())
-    exit()
+    #print(primer_paso())
+    #exit()
 
-    #carr = carrega('codigosx.txt')
-    ok = False
+    #carr = carrega('codigos.txt')
+    ok = False # not ok
     #print(carr)
-    input()
+    input('Pulsa enter')
     os.system('cls')
     while not ok: #obligamos a que el numero entrado sea correcto
         try:
             eq = int(input('entra dorsal (1 a 15):'))
-            ok = eq >= 1 and eq <= 15
+            #ok = eq >= 1 and eq <= 15
+            ok = 1 <= eq <= 15 #lo mismo que anterior
         except ValueError:
             ok = False
-    print('\nVuelta rápida equipo %d ' % eq, end=' --> ')
+
+    print(f'\nVuelta rápida equipo {eq}', end=' --> ')
+    print(vuelta_rapida_veh(eq))
+    exit()
     vo, te = vuelta_rapida_veh(carr, eq)
+
     print('vuelta %s en %s' % (vo, ct_tp(te)))
     mvc = vuelta_rapida_carrera(carr)
     print('\nvuelta rápida carrera')
