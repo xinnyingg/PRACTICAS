@@ -4,14 +4,33 @@ import os
 
 def carrega(fitxer):
     # Cargamos el fichero y lo pasamos a una lista
-    pass
+
+    datos=[] #crear variable datos
+    with open(fitxer, mode='r') as f:
+        #datos = f.readlines()
+        #datos = list(f) #lo mismo que readlines
+        for linea in f: #hacer la lectura linea en linea
+         #   print(linea.rstrip()) #con .rstrip() se consigue eliminar espacio entre lineas
+         #   datos.append(linea.rstrip()) #otra manera
+            print(tp_ct(linea))
+
+        #print(datos)
+    exit()
 
 
 def tp_ct(t):
+    """
+    >>> tp_ct('02;00;01;27;82')
+    [2, lo que sea del tiempo en centesima de segundo]
+    :param t:
+    :return:
+    """
     # creamos un código de tiemo para calcular tiempos de paso
     # pasamos el tiempo en hh:mm:ss,cc a centésimas de segundo
-    pass
 
+    ls = t.split(';') #convertir en una lista y .split(;) separar elementos segun lo que este en()
+    print(ls)
+    return[int(ls[0]), int(ls[1])*60*60*100+int(ls[2])*60*100+int(ls[3])*100+int(ls[4])]
 
 def ct_tp(c):
     # pasamos centésimas de segundo a h,min,seg,cent
@@ -40,14 +59,34 @@ def classificacio(carr):
     # para la ordenación final
     pass
 
+def primer_paso():
+    try:
+        with open('codigos.txt', mode='r') as f:
+            control = {} #definir un diccionario
+            for linea in f:
+                coche , cents = tp_ct(linea)
+                if coche not in control: #si el coche no este en el diccionario
+                    control[coche] = cents #añadir este coche al control
+                    if len(control) == 15: #si llega al 15, no hace falta seguir, pq solo hay 15
+                        return control
+            return control
+    except FileNotFoundError as e:
+        print("Error:", e)
+
+
 def main():
     """
     Programa principal  
     llamada a las funciones creadas
     """
-    carr = carrega('codigos.txt')
+    #datos = f.readlines()
+    #datos = list(f) #lo mismo que readlines
+    print(primer_paso())
+    exit()
+
+    #carr = carrega('codigosx.txt')
     ok = False
-    print(carr)
+    #print(carr)
     input()
     os.system('cls')
     while not ok: #obligamos a que el numero entrado sea correcto
