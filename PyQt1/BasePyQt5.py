@@ -28,7 +28,7 @@ class MyWindowClass(QMainWindow, form_class):
         v1, v2 = self.entrada()
         #v1 = float(self.entrada1.text())
         #v2 = float(self.entrada2.text())
-        r = v1-v2
+        r = v1+v2
         self.salida(r)
         #self.etresultado.setText(str(v1+v2))
 
